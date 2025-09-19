@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Músico Profissional | Galeria de Imagens</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome para ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts - Inter para melhor legibilidade -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Define a fonte Inter para todo o corpo do documento */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Cores de destaque personalizadas */
+        .bg-accent {
+            background-color: #4a5568; /* Cinza escuro para destaque */
+        }
+        .text-accent {
+            color: #4a5568;
+        }
+        .hover\:bg-accent:hover {
+            background-color: #2d3748; /* Tom mais escuro no hover */
+        }
+        /* Estilos para o overlay de título da galeria */
+        .gallery-item-container {
+            position: relative;
+            border-radius: 0.5rem; /* rounded-lg */
+            overflow: hidden; /* Garante que o texto não "vaze" */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* shadow-md */
+            cursor: pointer; /* Indica que o item é interativo */
+        }
+        .gallery-item-container:hover .gallery-overlay {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .gallery-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%);
+            color: white;
+            padding: 0.75rem; /* p-3 */
+            text-align: center;
+            font-weight: 600; /* font-semibold */
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+            transform: translateY(100%); /* Começa escondido abaixo */
+            border-bottom-left-radius: 0.5rem;
+            border-bottom-right-radius: 0.5rem;
+        }
+        /* Estilos para o botão flutuante do WhatsApp, se desejado na galeria */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #25D366; /* Cor do WhatsApp */
+            color: white;
+            border-radius: 50%;
+            padding: 15px;
+            font-size: 2.5rem; /* Tamanho do ícone */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: transform 0.3s ease-in-out;
+        }
+        .whatsapp-float:hover {
+            transform: scale(1.1);
+        }
+        .social-icon {
+            background-color: #e2e8f0; /* bg-gray-200 */
+            width: 44px; /* w-11 */
+            height: 44px; /* h-11 */
+            border-radius: 9999px; /* rounded-full */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s, transform 0.3s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .social-icon:hover {
+            background-color: #cbd5e0; /* hover:bg-gray-300 */
+            transform: translateY(-2px); /* Slight lift on hover */
+        }
+        .social-icon i, .social-icon svg {
+            color: #4a5568; /* text-gray-700 */
+            font-size: 1.25rem; /* text-xl */
+        }
+        /* Ajuste para as imagens dentro da galeria */
+        .gallery-item-container img {
+            width: 100%;
+            height: auto; /* Permite que a altura se ajuste automaticamente */
+            object-fit: cover; /* Garante que a imagem cubra o espaço mantendo a proporção */
+            border-radius: 0.5rem; /* Mantém os cantos arredondados */
+            min-height: 150px; /* Adiciona uma altura mínima para evitar imagens muito pequenas */
+        }
+
+        /* Estilos para o modal de imagem */
+        .image-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8); /* Fundo escuro semi-transparente */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000; /* Garante que o modal esteja acima de tudo */
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+        }
+        .image-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .image-modal-content {
+            background-color: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            max-width: 90%;
+            max-height: 90%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            transform: scale(0.9);
+            transition: transform 0.3s ease-in-out;
+        }
+        .image-modal.active .image-modal-content {
+            transform: scale(1);
+        }
+        .image-modal-content img {
+            max-width: 100%;
+            max-height: 80vh; /* Limita a altura da imagem para caber na tela */
+            object-fit: contain; /* Garante que a imagem inteira seja visível */
+            border-radius: 0.25rem;
+        }
+        .image-modal-caption {
+            margin-top: 0.5rem;
+            color: #4a5568;
+            font-weight: 600;
+            text-align: center;
+            padding: 0 1rem;
+        }
+        .close-modal-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 2rem;
+            color: #4a5568;
+            cursor: pointer;
+            line-height: 1;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: background-color 0.2s;
+        }
+        .close-modal-btn:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+        /* Estilo para a barrinha de sublinhado na navegação */
+        .nav-link-underline {
+            position: relative;
+            display: inline-block; /* Para que o pseudo-elemento funcione corretamente */
+        }
+        .nav-link-underline::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 3px; /* Espessura da barrinha */
+            bottom: -2px; /* Posição mais próxima do texto */
+            left: 0;
+            background-color: #4a5568; /* Cor da barrinha (cor accent) */
+            transition: width 0.3s ease-in-out; /* Transição suave */
+        }
+        .nav-link-underline:hover::after {
+            width: 100%;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased text-gray-800 bg-gray-100">
+
+    <!-- Navigation for the Gallery Page -->
+    <nav class="bg-gray-200 shadow-lg fixed w-full z-10">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <!-- Nome do Artista -->
+                <div>
+                    <a href="index.html" class="flex items-center py-4 px-2">
+                        <span class="font-semibold text-gray-500 text-2xl">Rodrigo Fa</span>
+                    </a>
+                </div>
+
+                <!-- Links de Navegação (Desktop) -->
+                <div class="hidden md:flex space-x-6">
+                    <a href="galeria1.html" class="nav-link-underline text-gray-800 hover:text-accent">Rodrigo Fa</a>
+                    <a href="galeria2.html" class="nav-link-underline text-gray-800 hover:text-accent">Banda Combat</a>
+                    <a href="galeria3.html" class="nav-link-underline text-gray-800 hover:text-accent">Theatro dos Bonecos</a>
+                    <a href="galeria4.html" class="nav-link-underline text-gray-800 hover:text-accent">Freelancer</a>
+                    <a href="index.html" class="nav-link-underline text-gray-800 hover:text-accent">Voltar</a>
+                </div>
+
+                <!-- Botão Hamburger (Mobile) -->
+                <div class="md:hidden flex items-center">
+                    <button class="mobile-menu-button">
+                        <i class="fas fa-bars text-2xl text-gray-600"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Menu Mobile -->
+        <div class="mobile-menu hidden md:hidden bg-gray-200 px-4 pb-4">
+            <a href="galeria1.html" class="block py-2 text-gray-800 hover:text-accent">Rodrigo Fa</a>
+            <a href="galeria2.html" class="block py-2 text-gray-800 hover:text-accent">Banda Combat</a>
+            <a href="galeria3.html" class="block py-2 text-gray-800 hover:text-accent">Theatro dos Bonecos</a>
+            <a href="galeria4.html" class="block py-2 text-gray-800 hover:text-accent">Freelancer</a>
+            <a href="index.html" class="block py-2 text-gray-800 hover:text-accent">Voltar</a>
+        </div>
+    </nav>
+
+    <!-- Gallery Section (Nova Aba) -->
+    <section id="gallery-full" class="py-20 bg-gray-100 px-4 pt-32">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-accent mb-16">Galeria de Theatro dos Bonecos</h2>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                <!-- Imagens da galeria: 3 por linha, 4 linhas = 12 imagens -->
+                <div class="gallery-item-container">
+                    <img src="./3 - theatro site/1.avif" alt="">
+                    <div class="gallery-overlay">
+                        <p></p>
+                    </div>
+                </div>
+                <div class="gallery-item-container">
+                    <img src="./3 - theatro site/2.avif" alt="">
+                    <div class="gallery-overlay">
+                        <p></p>
+                    </div>
+                </div>
+                <div class="gallery-item-container">
+                    <img src="./3 - theatro site/3.avif" alt="">
+                    <div class="gallery-overlay">
+                        <p></p>
+                    </div>
+                </div>
+                <div class="gallery-item-container">
+                    <img src="./3 - theatro site/4.avif" alt="">
+                    <div class="gallery-overlay">
+                        <p></p>
+                    </div>
+                </div>
+                <div class="gallery-item-container">
+                    <img src="./3 - theatro site/5.avif" alt="">
+                    <div class="gallery-overlay">
+                        <p></p>
+                    </div>
+                </div>
+                <div class="gallery-item-container">
+                    <img src="./3 - theatro site/6.avif" alt="">
+                    <div class="gallery-overlay">
+                        <p></p>
+                    </div>
+                </div>
+                <div class="gallery-item-container">
+                    <img src="./3 - theatro site/7.avif" alt="">
+                    <div class="gallery-overlay">
+                        <p></p>
+                    </div>
+                </div>
+                <div class="gallery-item-container">
+                    <img src="./3 - theatro site/8.avif" alt="">
+                    <div class="gallery-overlay">
+                        <p></p>
+                    </div>
+                </div>
+                <div class="gallery-item-container">
+                    <img src="./3 - theatro site/9.avif" alt="">
+                    <div class="gallery-overlay">
+                        <p></p>
+                    </div>
+                </div>
+                <div class="gallery-item-container">
+                    <img src="./3 - theatro site/20.avif" alt="">
+                    <div class="gallery-overlay">
+                        <p></p>
+                    </div>
+                </div>
+                <div class="gallery-item-container">
+                    <img src="./3 - theatro site/21.avif" alt="">
+                    <div class="gallery-overlay">
+                        <p></p>
+                    </div>
+                </div>                
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contato" class="py-20 bg-white px-4">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-accent mb-16">Entre em Contato</h2>
+            
+            <div class="grid md:grid-cols-1 gap-12 justify-center">
+                <div class="bg-gray-200 p-8 rounded-lg shadow-xl md:w-3/4 lg:w-1/2 mx-auto">
+                    <h3 class="text-2xl font-bold text-center text-accent mb-8">Informações de Contato</h3>
+                    <div class="space-y-6">
+                        <div class="flex items-start p-4 bg-white rounded-lg shadow-sm">
+                            <i class="fas fa-phone-alt text-3xl text-accent mr-4 mt-1"></i>
+                            <div>
+                                <h4 class="font-semibold text-lg text-gray-900">Telefone</h4>
+                                <a href="https://api.whatsapp.com/send?phone=+554891530512&text=Olá! Gostaria de mais informações sobre suas apresentações." target="_blank" class="text-gray-600 hover:text-[#25D366]">(48) 9 9153-0512</a>                                
+                            </div>
+                        </div>
+                        <div class="flex items-start p-4 bg-white rounded-lg shadow-sm">
+                            <i class="fas fa-envelope text-3xl text-accent mr-4 mt-1"></i>
+                            <div>
+                                <h4 class="font-semibold text-lg text-gray-900">Email</h4>
+                                <p><a href="mailto:rodrigofa80@gmail.com" target="_blank" class="text-gray-600 hover:text-[#25D366]">rodrigofa80@gmail.com</a></p>                               
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-12 text-center">
+                        <h4 class="text-xl font-bold text-accent mb-6">Conecte-se nas Redes Sociais</h4>
+                        <div class="flex justify-center space-x-4">
+                            <!-- Instagram -->
+                            <a href="https://www.instagram.com/rodrigofaoficial?igsh=MWdhbXd1Mm5zbHY5aw==" target="_blank" class="social-icon">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <!-- YouTube -->
+                            <a href="https://www.youtube.com/@rodrigo_fa" target="_blank" class="social-icon">
+                                <i class="fab fa-youtube"></i>
+                            </a>
+                            <!-- Spotify -->
+                            <a href="https://open.spotify.com/artist/4V7iLCShAPZrz7W1ndFbbl?si=60ZcTRF-SnenNfVs8ePsjA" target="_blank" class="social-icon">
+                                <i class="fab fa-spotify"></i>
+                            </a>
+                            <!-- Deezer (usando SVG personalizado) -->
+                            <!-- <a href="https://www.deezer.com/br/artist/9091871?utm_source=deezer&utm_content=artist-9091871&utm_term=0_1718501255&utm_medium=web" target="_blank" class="social-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-5 h-5 fill-current">
+                                    <path fill="#4a5568" d="M2 13h4V22H2zM9 7h4v15H9zM16 2h4v20h-4z"/>
+                                </svg>
+                            </a> -->
+                            <!-- Email -->
+                            <a href="mailto:rodrigofa80@gmail.com" target="_blank" class="social-icon">
+                                <i class="fas fa-envelope"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer (Opcional, mas mantido para consistência) -->
+    <footer class="bg-gray-900 text-white py-12 px-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="border-t border-gray-800 pt-8 text-center text-gray-400">
+                <p>&copy; 2025 Rodrigo Fa. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- WhatsApp Floating Action Button -->
+    <a href="https://api.whatsapp.com/send?phone=+554891530512&text=Olá! Gostaria de mais informações sobre suas apresentações." target="_blank" class="whatsapp-float">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- Modal para visualização de imagem ampliada -->
+    <div id="imageModal" class="image-modal">
+        <div class="image-modal-content">
+            <button class="close-modal-btn" onclick="closeImageModal()">&times;</button>
+            <img id="modalImage" src="" alt="Imagem Ampliada">
+            <p id="modalCaption" class="image-modal-caption"></p>
+        </div>
+    </div>
+
+    <script>
+        // Função para abrir o modal da imagem
+        function openImageModal(imgSrc, imgAlt) {
+            const modal = document.getElementById('imageModal');
+            const modalImage = document.getElementById('modalImage');
+            const modalCaption = document.getElementById('modalCaption');
+
+            modalImage.src = imgSrc;
+            modalImage.alt = imgAlt;
+            modalCaption.textContent = imgAlt; // Usa o alt text como legenda
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Evita rolagem do corpo quando o modal está ativo
+        }
+
+        // Função para fechar o modal da imagem
+        function closeImageModal() {
+            const modal = document.getElementById('imageModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = ''; // Restaura a rolagem do corpo
+        }
+
+        // Adiciona event listeners para cada imagem da galeria
+        document.addEventListener('DOMContentLoaded', () => {
+            const galleryItems = document.querySelectorAll('.gallery-item-container img');
+            galleryItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    openImageModal(item.src, item.alt);
+                });
+            });
+
+            // Fecha o modal se clicar fora do conteúdo da imagem
+            const modal = document.getElementById('imageModal');
+            modal.addEventListener('click', (event) => {
+                if (event.target === modal) {
+                    closeImageModal();
+                }
+            });
+        });
+
+
+        // Script simples para abrir/fechar o menu mobile
+        document.addEventListener("DOMContentLoaded", () => {
+            const btn = document.querySelector(".mobile-menu-button");
+            const menu = document.querySelector(".mobile-menu");
+
+            btn.addEventListener("click", () => {
+                menu.classList.toggle("hidden");
+            });
+        });
+
+    </script>
+</body>
+</html>

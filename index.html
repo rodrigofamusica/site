@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"> 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Músico Profissional | Showcase</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome para ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts - Inter para melhor legibilidade -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Define a fonte Inter para todo o corpo do documento */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Estilos personalizados para a seção Hero */
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('./hero2.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+        /* Contêiner para vídeos responsivos */
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            overflow: hidden;
+            border-radius: 0.5rem; /* rounded-lg */
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        /* Cores de destaque personalizadas */
+        .bg-accent {
+            background-color: #4a5568; /* Cinza escuro para destaque */
+        }
+        .text-accent {
+            color: #4a5568;
+        }
+        .hover\:bg-accent:hover {
+            background-color: #2d3748; /* Tom mais escuro no hover */
+        }
+        /* Estilo para o ícone flutuante do WhatsApp */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #25D366; /* Cor do WhatsApp */
+            color: white;
+            border-radius: 50%;
+            padding: 15px;
+            font-size: 2rem; /* Tamanho do ícone */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: transform 0.3s ease-in-out;
+        }
+        .whatsapp-float:hover {
+            transform: scale(1.1);
+        }
+        /* Custom styles for social media icons */
+        .social-icon {
+            background-color: #e2e8f0; /* bg-gray-200 */
+            width: 44px; /* w-11 */
+            height: 44px; /* h-11 */
+            border-radius: 9999px; /* rounded-full */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s, transform 0.3s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .social-icon:hover {
+            background-color: #cbd5e0; /* hover:bg-gray-300 */
+            transform: translateY(-2px); /* Slight lift on hover */
+        }
+        .social-icon i, .social-icon svg {
+            color: #4a5568; /* text-gray-700 */
+            font-size: 1.25rem; /* text-xl */
+        }
+        /* Estilos para o overlay de título da galeria */
+        .gallery-item-container {
+            position: relative;
+            border-radius: 0.5rem; /* rounded-lg */
+            overflow: hidden; /* Garante que o texto não "vaze" */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* shadow-md */
+        }
+        .gallery-item-container:hover .gallery-overlay {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .gallery-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%);
+            color: white;
+            padding: 0.75rem; /* p-3 */
+            text-align: center;
+            font-weight: 600; /* font-semibold */
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+            transform: translateY(100%); /* Começa escondido abaixo */
+            border-bottom-left-radius: 0.5rem;
+            border-bottom-right-radius: 0.5rem;
+        }
+        /* Estilo para a barrinha de sublinhado na navegação */
+        .nav-link-underline {
+            position: relative;
+            display: inline-block; /* Para que o pseudo-elemento funcione corretamente */
+        }
+        .nav-link-underline::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 3px; /* Espessura da barrinha */
+            bottom: -2px; /* Posição mais próxima do texto */
+            left: 0;
+            background-color: #4a5568; /* Cor da barrinha (cor accent) */
+            transition: width 0.3s ease-in-out; /* Transição suave */
+        }
+        .nav-link-underline:hover::after {
+            width: 100%;
+        }
+
+        /* Estilos para as capas de álbum na Discografia */
+        .album-cover-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 0.5rem; /* rounded-lg */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* shadow-md */
+            transition: transform 0.3s ease-in-out;
+        }
+        .album-cover-container:hover {
+            transform: translateY(-15px); /* Efeito de elevação no hover */
+        }
+        .album-cover-container iframe {
+            width: 100%;
+            height: 352px; /* Altura padrão para embeds do Spotify */
+            display: block;
+            border-radius: 10px;
+        }
+         .album-title-overlay {
+            text-align: center; /* Centraliza o texto horizontalmente */
+            padding: 5px 0;    /* Adiciona um espaço acima e abaixo do texto */
+            color: #ffffff;   /* Cor do texto, um cinza escuro; ajuste se precisar */
+        }
+        .album-title-overlay p {
+            margin: 0; /* Remove a margem padrão do parágrafo */
+            font-family: 'Montserrat', sans-serif; /* Exemplo de fonte: Montserrat. Troque pela sua preferida! */
+            font-size: 1.2em; /* Tamanho da fonte; ajuste para maior ou menor */
+            font-weight: bold; /* Deixa o texto em negrito */
+        }
+    </style>
+
+</head>
+
+<body class="font-sans antialiased text-gray-800">
+    <!-- Navigation -->
+    <nav class="bg-gray-200 shadow-lg fixed w-full z-10">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <!-- Nome do Artista -->
+                <div>
+                    <a href="#" class="flex items-center py-4 px-2">
+                        <span class="font-semibold text-gray-600 text-2xl">Rodrigo Fa</span>
+                    </a>
+                </div>
+
+                <!-- Links de Navegação Centralizados -->
+                <div class="hidden md:flex flex-grow justify-center items-center space-x-1">
+                    <a href="#inicio" class="py-1 px-1 text-gray-800 hover:text-accent transition duration-300 nav-link-underline">Início</a>
+                    <a href="#sobre" class="py-1 px-1 text-gray-800 hover:text-accent transition duration-300 nav-link-underline">Sobre</a>
+                    <a href="#repertorio" class="py-1 px-1 text-gray-800 hover:text-accent transition duration-300 nav-link-underline">Repertório</a>
+                    <a href="#galeria" class="py-1 px-1 text-gray-800 hover:text-accent transition duration-300 nav-link-underline">Galeria</a>
+                    <a href="#contato" class="py-1 px-1 text-gray-800 hover:text-accent transition duration-300 nav-link-underline">Contato</a>
+                </div>
+
+                <!-- Botão Agendar -->
+                <div class="items-center space-x-3">
+                    <a href="https://docs.google.com/spreadsheets/d/1lvj2pejVQSrB5Up16bgYUqnFmehfk1YbC3qYWz_3rxo/edit?usp=sharing" target="_blank" class="py-2 px-4 bg-accent text-white rounded-lg hover:bg-gray-700 transition duration-300">
+                        <i class="fas fa-calendar-alt mr-2"></i>Agenda
+                    </a>
+                </div>
+
+                <!-- Botão do menu mobile -->
+                <div class="md:hidden flex items-center">
+                    <button class="outline-none mobile-menu-button">
+                        <svg class="w-6 h-6 text-gray-500" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+                            <path d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Menu mobile -->
+        <div class="hidden mobile-menu">
+            <ul>
+                <li class="active"><a href="#inicio" class="block text-sm px-2 py-4 text-white bg-accent font-semibold">Início</a></li>
+                <li><a href="#sobre" class="block text-sm px-2 py-4 hover:bg-gray-200 transition duration-300">Sobre</a></li>
+                <li><a href="#repertorio" class="block text-sm px-2 py-4 hover:bg-gray-200 transition duration-300">Repertório</a></li>
+                <li><a href="#galeria" class="block text-sm px-2 py-4 hover:bg-gray-200 transition duration-300">Galeria</a></li>
+                <li><a href="#contato" class="block text-sm px-2 py-4 hover:bg-gray-200 transition duration-300">Contato</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="inicio" class="hero text-white pt-32 pb-20 md:pt-40 md:pb-32 px-4 md:px-0">
+        <div class="max-w-2xl mx-auto text-center">
+            <h1 class="text-4xl md:text-6xl font-bold mb-6">Rodrigo Fa</h1>
+            <p class="text-xl md:text-2xl mb-8">Música que transforma ambientes e cria experiências memoráveis</p>
+            <div class="flex flex-col md:flex-row justify-center gap-4">
+                <a href="#contato" class="bg-accent hover:bg-gray-700 text-white font-bold py-3 px-8 rounded-full transition duration-300">
+                    <i class="fas fa-music mr-2"></i>Contratar para Evento
+                </a>
+                <a href="#galeria" class="bg-gray-100 hover:bg-gray-200 text-accent font-bold py-3 px-8 rounded-full transition duration-300">
+                    <i class="fas fa-play-circle mr-2"></i>Ver Performances
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="sobre" class="py-20 bg-gray-200 px-4">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-accent mb-0">Sobre o Artista</h2>
+            <div class="border-t border-[#4a5568] mt-8 pt-8"> </div>
+            
+            <div class="flex flex-col md:flex-row items-center gap-10">
+                <div class="w-full md:w-1/2">
+                    <!-- Imagem do artista com sombra e bordas arredondadas -->
+                    <img src="foto wide prof.jpg" alt="Foto do Artista" class="rounded-lg shadow-2xl w-full h-auto">
+                </div>
+                <div class="w-full md:w-1/2">
+                    <h3 class="text-2xl font-bold mb-4">Quem sou eu</h3>
+                    <p class="text-gray-600 mb-6">Sou um músico profissional dedicado a criar a atmosfera perfeita para seu evento, restaurante ou ocasião especial. Com mais de 30 anos de experiência, atuando como violonista, guitarrista solo, compositor e intérprete. Participação em diversas bandas autorais e de baile, com passagens por festivais, gravações de álbuns, turnês e shows com artistas nacionais. Também atua como escritor e poeta, com livro em desenvolvimento. Trabalho solo disponível em plataformas digitais. <a href="historia.html" class="text-green-500 mr-2 hover:underline font-semibold">Saiba mais sobre minha trajetória aqui.</a>                    
+                    <div class="mb-6">
+                        <h4 class="text-xl font-semibold mb-3 text-accent">Estilo Musical</h4>
+                        <ul class="grid grid-cols-2 gap-2">
+                            <li class="flex items-center"><i class="fas fa-music text-accent mt-1 mr-2"></i> MPB</li>
+                            <li class="flex items-center"><i class="fas fa-music text-accent mt-1 mr-2"></i> Pop-Rock</li>
+                            <li class="flex items-center"><i class="fas fa-music text-accent mt-1 mr-2"></i> Clássicos Internacionais</li>
+                            <li class="flex items-center"><i class="fas fa-music text-accent mt-1 mr-2"></i> Clássicos nacionais</li>
+                            <li class="flex items-center"><i class="fas fa-music text-accent mt-1 mr-2"></i> Reggae</li>
+                            <li class="flex items-center"><i class="fas fa-music text-accent mt-1 mr-2"></i> Forró</li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h4 class="text-xl font-semibold mb-3 text-accent">Locais de Atuação</h4>
+                        <ul class="flex flex-wrap gap-2">
+                            <li class="bg-gray-300 px-3 py-1 rounded-full text-sm">Restaurantes</li>
+                            <li class="bg-gray-300 px-3 py-1 rounded-full text-sm">Casamentos</li>
+                            <li class="bg-gray-300 px-3 py-1 rounded-full text-sm">Eventos Corporativos</li>
+                            <li class="bg-gray-300 px-3 py-1 rounded-full text-sm">Bares e Pubs</li>
+                            <li class="bg-gray-300 px-3 py-1 rounded-full text-sm">Festas Privadas</li>
+                            <li class="bg-gray-300 px-3 py-1 rounded-full text-sm">Aniversários</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Repertoire Section -->
+    <section id="repertorio" class="py-20 bg-white px-4">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-accent mb-0">Repertório Musical</h2>
+            <div class="border-t border-[#4a5568] mt-8 pt-8"> </div>
+            
+            <!-- <div class="grid md:grid-cols-3 gap-8 mb-12"> -->
+                <!-- Cartão de Repertório 1 -->
+                <!-- <div class="bg-gray-50 p-6 rounded-lg shadow-md hover:shadow-xl transition duration-300"> -->
+                    <!-- <div class="text-center mb-4">
+                        <i class="fas fa-glass-cheers text-4xl text-accent"></i>
+                    </div> -->
+                    <!-- <h3 class="text-xl font-semibold text-center mb-4">Ambiental/Sofisticado</h3>
+                    <ul class="space-y-2">
+                        <li class="flex items-start">
+                            <i class="fas fa-music text-accent mt-1 mr-2"></i>
+                            <span>Bossa Nova (Tom Jobim, João Gilberto)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-music text-accent mt-1 mr-2"></i>
+                            <span>Jazz Instrumental</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-music text-accent mt-1 mr-2"></i>
+                            <span>MPB Clássica</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-music text-accent mt-1 mr-2"></i>
+                            <span>Músicas Internacionais</span>
+                        </li>
+                    </ul>
+                </div> -->
+                
+                <!-- Cartão de Repertório 2 -->
+                <!-- <div class="bg-gray-50 p-6 rounded-lg shadow-md hover:shadow-xl transition duration-300">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-birthday-cake text-4xl text-accent"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-center mb-4">Eventos Sociais</h3>
+                    <ul class="space-y-2">
+                        <li class="flex items-start">
+                            <i class="fas fa-music text-accent mt-1 mr-2"></i>
+                            <span>Pop Nacional e Internacional</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-music text-accent mt-1 mr-2"></i>
+                            <span>Rock Clássico</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-music text-accent mt-1 mr-2"></i>
+                            <span>Músicas Românticas</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-music text-accent mt-1 mr-2"></i>
+                            <span>Sucessos Atuais</span>
+                        </li>
+                    </ul>
+                </div> -->
+                
+                <!-- Cartão de Repertório 3 -->
+                <!-- <div class="bg-gray-50 p-6 rounded-lg shadow-md hover:shadow-xl transition duration-300">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-building text-4xl text-accent"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-center mb-4">Repertório Corporativo</h3>
+                    <ul class="space-y-2">
+                        <li class="flex items-start">
+                            <i class="fas fa-music text-accent mt-1 mr-2"></i>
+                            <span>Instrumental Profissional</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-music text-accent mt-1 mr-2"></i>
+                            <span>Músicas Personalizadas</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-music text-accent mt-1 mr-2"></i>
+                            <span>Temas de Eventos</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-music text-accent mt-1 mr-2"></i>
+                            <span>Músicas para Coquetéis</span>
+                        </li>
+                    </ul>
+                </div> -->
+            <!-- </div> -->
+            
+            <div class="mt-6 text-center">
+                <p class="text-lg mb-10">Tenho um repertório flexível que pode ser adaptado às necessidades do seu evento.</p>
+                <a href="https://api.whatsapp.com/send?phone=+554891530512&text=Olá! Gostaria de solicitar um repertório personalizado." target="_blank" class="inline-block bg-accent hover:bg-gray-700 text-white font-bold py-3 px-8 rounded-full transition duration-300">
+                    <i class="fas fa-headphones-alt mr-2"></i>Solicitar Repertório Personalizado
+                </a>
+            </div>
+
+            <!-- Spotify Playlist Iframe adicionado aqui -->
+            <div class="mt-10 max-w-2xl mx-auto">
+                <h3 class="text-2xl font-bold text-center text-accent mb-8">Ouça Um Pouco do Meu Repertório</h3>
+                <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/4rEmu5YxaFtHmatV9cxGKW?utm_source=generator&theme=0" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+            </div>
+        </div>
+    </section>
+
+    <!-- Video/Gallery Section -->
+    <section id="galeria" class="py-20 bg-gray-300 px-4">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-accent mb-10">Performances</h2>
+            <div class="border-t border-[#4a5568] mt-8 pt-8"> </div>
+            
+            <div class="grid md:grid-cols-2 gap-8 mb-12">
+                <!-- Vídeo do YouTube 1 -->
+                <div class="video-container shadow-lg">
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/5jrkL70RtaA?si=N8PkX6hMUYb2rsSl" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+                <!-- Vídeo do YouTube 2 -->
+                <div class="video-container shadow-lg">
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/m61rwqxj388?si=PNzB4cq6e2QBpou4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <a href="galeria1.html" class="gallery-item-container block" >
+                    <img src="./1 - rodrigo fa site/1capa.avif" alt="Performance" class="w-full h-48 object-cover">
+                    <div class="gallery-overlay">
+                        <p>Rodrigo Fa</p>
+                    </div>
+                </a>
+
+                <a href="galeria2.html" class="gallery-item-container block" >
+                    <img src="./2 - combat site/2capa.avif" alt="Performance" class="w-full h-48 object-cover">
+                    <div class="gallery-overlay">
+                        <p>Banda Combat</p>
+                    </div>
+                </a>
+
+                <a href="galeria3.html" class="gallery-item-container block" >
+                    <img src="./3 - theatro site/3capa.avif" alt="Performance" class="w-full h-48 object-cover">
+                    <div class="gallery-overlay">
+                        <p>Theatro dos Bonecos</p>
+                    </div>
+                </a>
+
+                <a href="galeria4.html" class="gallery-item-container block" >
+                    <img src="./4 - freelancer site/4capa.avif" alt="Performance" class="w-full h-48 object-cover">
+                    <div class="gallery-overlay">
+                        <p>Freelancer</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Discografia Section (Antiga seção de Depoimentos) -->
+    <section class="py-20 bg-accent text-white px-4">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-10">Discografia</h2>
+            <div class="border-t border-[#e2e8f0] mt-8 pt-8"> </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Álbum 1 -->
+                <div class="album-cover-container">
+                    <!-- <a href="link-para-album-1.html" class="album-link block shadow-lg rounded-lg"> -->
+                        <img src="A Luz de um Olhar.jpg" alt="Capa do Álbum Um" class="w-full h-auto object-cover rounded-lg">
+                        <div class="album-title-overlay"> 
+                            <p>A Luz de um Olhar - 2020</p> 
+                        </div>
+                    <!-- </a> -->
+                </div>
+                
+                <!-- Álbum 2 -->
+                <div class="album-cover-container">
+                        <img src="Rodrigo Fa.jpg" alt="Capa do Álbum Dois" class="w-full h-auto object-cover rounded-lg">
+                        <div class="album-title-overlay">
+                            <p>Rodrigo Fa - 2021</p>
+                        </div>
+                    </a>
+                </div>
+                
+                <!-- Álbum 3 -->
+                <div class="album-cover-container">
+                        <img src="Passos Lentos.jpg" alt="Capa do Álbum Três" class="w-full h-auto object-cover rounded-lg">
+                        <div class="album-title-overlay">
+                            <p>Passos Lentos (Acústico 2) - </p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contato" class="py-20 bg-white px-4">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-accent mb-16">Entre em Contato</h2>
+            
+            <div class="grid md:grid-cols-1 gap-12 justify-center">
+                <div class="bg-gray-300 p-8 rounded-lg shadow-xl md:w-3/4 lg:w-1/2 mx-auto">
+                    <h3 class="text-2xl font-bold text-center text-accent mb-8">Informações de Contato</h3>
+                    <div class="space-y-6">
+                        <div class="flex items-start p-4 bg-white rounded-lg shadow-sm">
+                            <i class="fas fa-phone-alt text-3xl text-accent mr-4 mt-1"></i>
+                            <div>
+                                <h4 class="font-semibold text-lg text-gray-900">Telefone</h4>
+                                <a href="https://api.whatsapp.com/send?phone=+554891530512&text=Olá! Gostaria de mais informações sobre suas apresentações." target="_blank" class="text-gray-600 hover:text-[#25D366]">(48) 9 9153-0512</a>                                
+                            </div>
+                        </div>
+                        <div class="flex items-start p-4 bg-white rounded-lg shadow-sm">
+                            <i class="fas fa-envelope text-3xl text-accent mr-4 mt-1"></i>
+                            <div>
+                                <h4 class="font-semibold text-lg text-gray-900">Email</h4>
+                                <p><a href="mailto:rodrigofa80@gmail.com" target="_blank" class="text-gray-600 hover:text-[#25D366]">rodrigofa80@gmail.com</a></p>                               
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-12 text-center">
+                        <h4 class="text-xl font-bold text-accent mb-6">Conecte-se nas Redes Sociais</h4>
+                        <div class="flex justify-center space-x-4">
+                            <!-- Instagram -->
+                            <a href="https://www.instagram.com/rodrigofaoficial?igsh=MWdhbXd1Mm5zbHY5aw==" target="_blank" class="social-icon">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <!-- YouTube -->
+                            <a href="https://www.youtube.com/@rodrigo_fa" target="_blank" class="social-icon">
+                                <i class="fab fa-youtube"></i>
+                            </a>
+                            <!-- Spotify -->
+                            <a href="https://open.spotify.com/artist/4V7iLCShAPZrz7W1ndFbbl?si=60ZcTRF-SnenNfVs8ePsjA" target="_blank" class="social-icon">
+                                <i class="fab fa-spotify"></i>
+                            </a>
+                            <!-- Deezer (usando SVG personalizado) -->
+                            <!-- <a href="https://www.deezer.com/br/artist/9091871?utm_source=deezer&utm_content=artist-9091871&utm_term=0_1718501255&utm_medium=web" target="_blank" class="social-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-5 h-5 fill-current">
+                                    <path fill="#4a5568" d="M2 13h4V22H2zM9 7h4v15H9zM16 2h4v20h-4z"/>
+                                </svg>
+                            </a> -->
+                            <!-- Email -->
+                            <a href="mailto:rodrigofa80@gmail.com" target="_blank" class="social-icon">
+                                <i class="fas fa-envelope"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12 px-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-xl font-semibold mb-4">Rodrigo Fa</h3>
+                    <p class="text-gray-400">Música profissional para eventos, restaurantes e ocasiões especiais.</p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold mb-4">Links Rápidos</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#inicio" class="text-gray-400 hover:text-white transition duration-300">Início</a></li>
+                        <li><a href="#sobre" class="text-gray-400 hover:text-white transition duration-300">Sobre</a></li>
+                        <li><a href="#repertorio" class="text-gray-400 hover:text-white transition duration-300">Repertório</a></li>
+                        <li><a href="#galeria" class="text-gray-400 hover:text-white transition duration-300">Galeria</a></li>
+                        <li><a href="#contato" class="text-gray-400 hover:text-white transition duration-300">Contato</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold mb-4">Newsletter</h3>
+                    <p class="text-gray-400 mb-4">Cadastre-se para receber novidades e datas de apresentação.</p>
+                    <form class="flex">
+                        <input type="email" placeholder="Seu email" class="px-4 py-2 w-full rounded-l-lg focus:outline-none text-gray-800">
+                        <button type="submit" class="bg-accent hover:bg-gray-700 px-4 rounded-r-lg transition duration-300">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2025 Rodrigo Fa. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- WhatsApp Floating Action Button -->
+    <a href="https://api.whatsapp.com/send?phone=+554891530512&text=Olá! Gostaria de mais informações sobre suas apresentações." target="_blank" class="whatsapp-float">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <script>
+        // Mobile menu toggle
+        const btn = document.querySelector(".mobile-menu-button");
+        const menu = document.querySelector(".mobile-menu");
+
+        btn.addEventListener("click", () => {
+            menu.classList.toggle("hidden");
+        });
+
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                // Esconde o menu mobile ao clicar em um link
+                menu.classList.add('hidden');
+                
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+    
+</body>
+</html>
